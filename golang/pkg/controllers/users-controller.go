@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -16,10 +17,21 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	CreateUser := &models.Users{}
 	utils.ParseBody(r, CreateUser)
-	e := CreateUser.CreateUser()
-	res, _ := json.Marshal(e)
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	res, err := CreateUser.CreateUser()
+	fmt.Println("Error: ", err)
+
+	if err != nil {
+		fmt.Println("Error2: ", err)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+
+	} else {
+		res, _ := json.Marshal(res)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
+	}
+
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +51,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	vars := mux.Vars(r)
 	userid := vars["id"]
-	ID, _ := strconv.ParseInt(userid, 0, 0)
+	ID, _ := strconv.ParseUint(userid, 0, 0)
 	user := models.DeleteUser(ID)
 	res, _ := json.Marshal(user)
 	w.Header().Set("Content-Type", "application/json")
@@ -55,7 +67,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	utils.ParseBody(r, user)
 	vars := mux.Vars(r)
 	userid := vars["id"]
-	ID, _ := strconv.ParseInt(userid, 0, 0)
+	ID, _ := strconv.ParseUint(userid, 0, 0)
 	userdetails, db := models.GetUserById(ID)
 	if user.Username != "" {
 		userdetails.Username = user.Username

@@ -40,7 +40,7 @@ func DeleteExpense(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	vars := mux.Vars(r)
 	expensesid := vars["id"]
-	ID, _ := strconv.ParseInt(expensesid, 0, 0)
+	ID, _ := strconv.ParseUint(expensesid, 0, 0)
 	expense := models.DeleteExpense(ID)
 	res, _ := json.Marshal(expense)
 	w.Header().Set("Content-Type", "application/json")
@@ -56,11 +56,11 @@ func UpdateExpense(w http.ResponseWriter, r *http.Request) {
 	utils.ParseBody(r, expense)
 	vars := mux.Vars(r)
 	expensesid := vars["id"]
-	ID, _ := strconv.ParseInt(expensesid, 0, 0)
+	ID, _ := strconv.ParseUint(expensesid, 0, 0)
 	expensedetails, db := models.GetExpenseById(ID)
 	if expense.UserId != 0 {
 		if expensedetails.UserId != expense.UserId {
-			user := models.GetExpenseUserById(uint(expense.UserId))
+			user := models.GetExpenseUserById((expense.UserId))
 			expensedetails.UserId = expense.UserId
 			expensedetails.Users = *user
 		}

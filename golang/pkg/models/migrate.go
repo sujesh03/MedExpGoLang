@@ -2,6 +2,13 @@ package models
 
 import "github.com/sujesh03/ExpenseTracker/pkg/config"
 
+type AppError struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Error   bool   `json:"error"`
+	//ErrorData error  `json:"errordata"`
+}
+
 func init() {
 	config.Connect()
 	db := config.GetDB()

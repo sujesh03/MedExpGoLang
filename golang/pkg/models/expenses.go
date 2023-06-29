@@ -11,7 +11,7 @@ import (
 
 type Expenses struct {
 	gorm.Model
-	UserId      int
+	UserId      uint64    `json:"UserId"`
 	Date        time.Time `json:"Date"`
 	ProjectCode string    `json:"ProjectCode"`
 	VendorName  string    `json:"VendorName"`
@@ -19,7 +19,7 @@ type Expenses struct {
 	Type        string    `json:"Type"`
 	Amount      float64   `json:"Amount"`
 	Status      int       `json:"Status"`
-	Users       Users     `gorm:"foreignkey:UserId;references:ID;" json:"UserId"`
+	Users       Users     `gorm:"foreignkey:UserId;references:ID;"`
 }
 
 func init() {
@@ -50,19 +50,19 @@ func GetAllExpenses() []Expenses {
 	return Expenses
 }
 
-func DeleteExpense(id int64) Expenses {
+func DeleteExpense(id uint64) Expenses {
 	var Expense Expenses
 	db.Where("id = ?", id).Delete(&Expense)
 	return Expense
 }
 
-func GetExpenseById(id int64) (*Expenses, *gorm.DB) {
+func GetExpenseById(id uint64) (*Expenses, *gorm.DB) {
 	var Expense Expenses
 	db.Where("id = ?", id).Find(&Expense)
 	return &Expense, db
 }
 
-func GetExpenseUserById(Id uint) *Users {
+func GetExpenseUserById(Id uint64) *Users {
 	var User Users
 	db.Where("ID=?", Id).Find(&User)
 	return &User

@@ -40,7 +40,7 @@ func DeleteVendor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	vars := mux.Vars(r)
 	vendorid := vars["id"]
-	ID, _ := strconv.ParseInt(vendorid, 0, 0)
+	ID, _ := strconv.ParseUint(vendorid, 0, 0)
 	vendor := models.DeleteVendor(ID)
 	res, _ := json.Marshal(vendor)
 	w.Header().Set("Content-Type", "pkglication/json")
@@ -56,11 +56,11 @@ func UpdateVendor(w http.ResponseWriter, r *http.Request) {
 	utils.ParseBody(r, vendor)
 	vars := mux.Vars(r)
 	vendorid := vars["id"]
-	ID, _ := strconv.ParseInt(vendorid, 0, 0)
+	ID, _ := strconv.ParseUint(vendorid, 0, 0)
 	vendordetails, db := models.GetVendorById(ID)
 	if vendor.UserId != 0 {
 		if vendor.UserId != vendordetails.UserId {
-			user := models.GetVendorUserById(uint(vendor.UserId))
+			user := models.GetVendorUserById((vendor.UserId))
 			vendordetails.UserId = vendor.UserId
 			vendordetails.Users = *user
 		}

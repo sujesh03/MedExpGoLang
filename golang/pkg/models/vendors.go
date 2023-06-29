@@ -12,12 +12,12 @@ var db *gorm.DB
 
 type Vendors struct {
 	gorm.Model
-	UserId   int
+	UserId   uint64    `json:"UserId"`
 	Name     string    `json:"Name"`
 	Status   int       `json:"Status"`
 	Created  time.Time `json:"Created"`
 	Modified time.Time `json:"Modified"`
-	Users    Users     `gorm:"foreignkey:UserId;references:ID;" json:"UserId"`
+	Users    Users     `gorm:"foreignkey:UserId;references:ID;"`
 }
 
 func init() {
@@ -45,19 +45,19 @@ func GetAllVendors() []Vendors {
 	return Vendors
 }
 
-func DeleteVendor(id int64) Vendors {
+func DeleteVendor(id uint64) Vendors {
 	var Vendor Vendors
 	db.Where("ID=?", id).Delete(&Vendor)
 	return Vendor
 }
 
-func GetVendorById(id int64) (*Vendors, *gorm.DB) {
+func GetVendorById(id uint64) (*Vendors, *gorm.DB) {
 	var Vendor Vendors
 	db.Where("ID=?", id).Find(&Vendor)
 	return &Vendor, db
 }
 
-func GetVendorUserById(Id uint) *Users {
+func GetVendorUserById(Id uint64) *Users {
 	var User Users
 	db.Where("ID = ?", Id).Find(&User)
 	return &User
